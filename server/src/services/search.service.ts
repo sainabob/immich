@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { LRUMap } from 'mnemonist';
 import { AssetMapOptions, AssetResponseDto, MapAsset, mapAsset } from 'src/dtos/asset-response.dto';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { mapPerson, PersonResponseDto } from 'src/dtos/person.dto';
@@ -10,9 +11,11 @@ import {
   SearchPeopleDto,
   SearchPlacesDto,
   SearchResponseDto,
+  SearchStatisticsResponseDto,
   SearchSuggestionRequestDto,
   SearchSuggestionType,
   SmartSearchDto,
+  StatisticsSearchDto,
 } from 'src/dtos/search.dto';
 import { AssetOrder, AssetVisibility } from 'src/enum';
 import { BaseService } from 'src/services/base.service';
@@ -22,6 +25,8 @@ import { isSmartSearchEnabled } from 'src/utils/misc';
 
 @Injectable()
 export class SearchService extends BaseService {
+  private embeddingCache = new LRUMap<string, string>(100);
+
   async searchPerson(auth: AuthDto, dto: SearchPeopleDto): Promise<PersonResponseDto[]> {
     const people = await this.personRepository.getByName(auth.user.id, dto.name, { withHidden: dto.withHidden });
     return people.map((person) => mapPerson(person));
@@ -67,6 +72,15 @@ export class SearchService extends BaseService {
     return this.mapResponse(items, hasNextPage ? (page + 1).toString() : null, { auth });
   }
 
+  async searchStatistics(auth: AuthDto, dto: StatisticsSearchDto): Promise<SearchStatisticsResponseDto> {
+    const userIds = await this.getUserIdsToSearch(auth);
+
+    return await this.searchRepository.searchStatistics({
+      ...dto,
+      userIds,
+    });
+  }
+
   async searchRandom(auth: AuthDto, dto: RandomSearchDto): Promise<AssetResponseDto[]> {
     if (dto.visibility === AssetVisibility.LOCKED) {
       requireElevatedPermission(auth);
@@ -87,16 +101,21 @@ export class SearchService extends BaseService {
       throw new BadRequestException('Smart search is not enabled');
     }
 
-    const userIds = await this.getUserIdsToSearch(auth);
-    const embedding = await this.machineLearningRepository.encodeText(machineLearning.urls, dto.query, {
-      modelName: machineLearning.clip.modelName,
-      language: dto.language,
-    });
+    const userIds = this.getUserIdsToSearch(auth);
+    const key = machineLearning.clip.modelName + dto.query + dto.language;
+    let embedding = this.embeddingCache.get(key);
+    if (!embedding) {
+      embedding = await this.machineLearningRepository.encodeText(machineLearning.urls, dto.query, {
+        modelName: machineLearning.clip.modelName,
+        language: dto.language,
+      });
+      this.embeddingCache.set(key, embedding);
+    }
     const page = dto.page ?? 1;
     const size = dto.size || 100;
     const { hasNextPage, items } = await this.searchRepository.searchSmart(
       { page, size },
-      { ...dto, userIds, embedding },
+      { ...dto, userIds: await userIds, embedding },
     );
 
     return this.mapResponse(items, hasNextPage ? (page + 1).toString() : null, { auth });

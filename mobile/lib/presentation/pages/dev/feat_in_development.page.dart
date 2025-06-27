@@ -1,5 +1,3 @@
-// ignore_for_file: avoid-local-functions
-
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
@@ -25,6 +23,11 @@ final _features = [
     name: 'Sync Local Full',
     icon: Icons.photo_library_rounded,
     onTap: (_, ref) => ref.read(backgroundSyncProvider).syncLocal(full: true),
+  ),
+  _Feature(
+    name: 'Hash Local Assets',
+    icon: Icons.numbers_outlined,
+    onTap: (_, ref) => ref.read(backgroundSyncProvider).hashAssets(),
   ),
   _Feature(
     name: 'Sync Remote',
@@ -60,6 +63,9 @@ final _features = [
       final db = ref.read(driftProvider);
       await db.remoteAssetEntity.deleteAll();
       await db.remoteExifEntity.deleteAll();
+      await db.remoteAlbumEntity.deleteAll();
+      await db.remoteAlbumUserEntity.deleteAll();
+      await db.remoteAlbumAssetEntity.deleteAll();
     },
   ),
   _Feature(
@@ -84,6 +90,11 @@ final _features = [
         await migrator.create(entity);
       }
     },
+  ),
+  _Feature(
+    name: 'Main Timeline',
+    icon: Icons.timeline_rounded,
+    onTap: (ctx, _) => ctx.pushRoute(const TabShellRoute()),
   ),
 ];
 
@@ -137,7 +148,6 @@ class _Feature {
   final Future<void> Function(BuildContext, WidgetRef _) onTap;
 }
 
-// ignore: prefer-single-widget-per-file
 class _DevLogs extends StatelessWidget {
   const _DevLogs();
 
@@ -165,7 +175,6 @@ class _DevLogs extends StatelessWidget {
         builder: (_, logMessages) {
           return ListView.separated(
             itemBuilder: (ctx, index) {
-              // ignore: avoid-unsafe-collection-methods
               final logMessage = logMessages.data![index];
               return ListTile(
                 title: Text(

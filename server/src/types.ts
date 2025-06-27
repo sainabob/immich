@@ -1,6 +1,7 @@
 import { SystemConfig } from 'src/config';
 import { VECTOR_EXTENSIONS } from 'src/constants';
 import {
+  AssetOrder,
   AssetType,
   DatabaseSslMode,
   ExifOrientation,
@@ -420,6 +421,7 @@ export interface IBulkAsset {
 export type SyncAck = {
   type: SyncEntityType;
   updateId: string;
+  extraId?: string;
 };
 
 export type StorageAsset = {
@@ -467,6 +469,9 @@ export type UserMetadataItem<T extends keyof UserMetadata = UserMetadataKey> = {
 };
 
 export interface UserPreferences {
+  albums: {
+    defaultAssetOrder: AssetOrder;
+  };
   folders: {
     enabled: boolean;
     sidebarWeb: boolean;

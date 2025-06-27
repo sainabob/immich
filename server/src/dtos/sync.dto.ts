@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsPositive, IsString } from 'class-validator';
+import { ArrayMaxSize, IsEnum, IsInt, IsPositive, IsString } from 'class-validator';
 import { AssetResponseDto } from 'src/dtos/asset-response.dto';
 import { AlbumUserRole, AssetOrder, AssetType, AssetVisibility, SyncEntityType, SyncRequestType } from 'src/enum';
 import { Optional, ValidateDate, ValidateUUID } from 'src/validation';
@@ -65,6 +65,7 @@ export class SyncAssetV1 {
   fileCreatedAt!: Date | null;
   fileModifiedAt!: Date | null;
   localDateTime!: Date | null;
+  duration!: string | null;
   @ApiProperty({ enumName: 'AssetTypeEnum', enum: AssetType })
   type!: AssetType;
   deletedAt!: Date | null;
@@ -144,6 +145,18 @@ export class SyncAlbumV1 {
   order!: AssetOrder;
 }
 
+export class SyncAlbumToAssetV1 {
+  albumId!: string;
+  assetId!: string;
+}
+
+export class SyncAlbumToAssetDeleteV1 {
+  albumId!: string;
+  assetId!: string;
+}
+
+export class SyncAckV1 {}
+
 export type SyncItem = {
   [SyncEntityType.UserV1]: SyncUserV1;
   [SyncEntityType.UserDeleteV1]: SyncUserDeleteV1;
@@ -153,12 +166,23 @@ export type SyncItem = {
   [SyncEntityType.AssetDeleteV1]: SyncAssetDeleteV1;
   [SyncEntityType.AssetExifV1]: SyncAssetExifV1;
   [SyncEntityType.PartnerAssetV1]: SyncAssetV1;
+  [SyncEntityType.PartnerAssetBackfillV1]: SyncAssetV1;
   [SyncEntityType.PartnerAssetDeleteV1]: SyncAssetDeleteV1;
   [SyncEntityType.PartnerAssetExifV1]: SyncAssetExifV1;
+  [SyncEntityType.PartnerAssetExifBackfillV1]: SyncAssetExifV1;
   [SyncEntityType.AlbumV1]: SyncAlbumV1;
   [SyncEntityType.AlbumDeleteV1]: SyncAlbumDeleteV1;
   [SyncEntityType.AlbumUserV1]: SyncAlbumUserV1;
+  [SyncEntityType.AlbumUserBackfillV1]: SyncAlbumUserV1;
   [SyncEntityType.AlbumUserDeleteV1]: SyncAlbumUserDeleteV1;
+  [SyncEntityType.AlbumAssetV1]: SyncAssetV1;
+  [SyncEntityType.AlbumAssetBackfillV1]: SyncAssetV1;
+  [SyncEntityType.AlbumAssetExifV1]: SyncAssetExifV1;
+  [SyncEntityType.AlbumAssetExifBackfillV1]: SyncAssetExifV1;
+  [SyncEntityType.AlbumToAssetV1]: SyncAlbumToAssetV1;
+  [SyncEntityType.AlbumToAssetBackfillV1]: SyncAlbumToAssetV1;
+  [SyncEntityType.AlbumToAssetDeleteV1]: SyncAlbumToAssetDeleteV1;
+  [SyncEntityType.SyncAckV1]: SyncAckV1;
 };
 
 const responseDtos = [
@@ -173,6 +197,9 @@ const responseDtos = [
   SyncAlbumDeleteV1,
   SyncAlbumUserV1,
   SyncAlbumUserDeleteV1,
+  SyncAlbumToAssetV1,
+  SyncAlbumToAssetDeleteV1,
+  SyncAckV1,
 ];
 
 export const extraSyncModels = responseDtos;
@@ -190,6 +217,7 @@ export class SyncAckDto {
 }
 
 export class SyncAckSetDto {
+  @ArrayMaxSize(1000)
   @IsString({ each: true })
   acks!: string[];
 }
