@@ -11,21 +11,25 @@ class DropdownSearchMenu<T> extends HookWidget {
     required this.dropdownMenuEntries,
     this.initialSelection,
     this.onSelected,
+    this.onSubmitted,
     this.trailingIcon,
     this.hintText,
     this.label,
     this.textStyle,
     this.menuConstraints,
+    this.clearOnSelection,
   });
 
   final List<DropdownMenuEntry<T>> dropdownMenuEntries;
   final T? initialSelection;
   final ValueChanged<T>? onSelected;
+  final ValueChanged<String>? onSubmitted;
   final Widget? trailingIcon;
   final String? hintText;
   final Widget? label;
   final TextStyle? textStyle;
   final BoxConstraints? menuConstraints;
+  final bool? clearOnSelection;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,7 @@ class DropdownSearchMenu<T> extends HookWidget {
       dropdownMenuEntries
           .firstWhereOrNull((item) => item.value == initialSelection),
     );
-    final showTimeZoneDropdown = useState<bool>(false);
+    final showDropdown = useState<bool>(false);
 
     final effectiveConstraints = menuConstraints ??
         const BoxConstraints(
@@ -51,11 +55,11 @@ class DropdownSearchMenu<T> extends HookWidget {
       hintText: hintText,
     ).applyDefaults(context.themeData.inputDecorationTheme);
 
-    if (!showTimeZoneDropdown.value) {
+    if (!showDropdown.value) {
       return ConstrainedBox(
         constraints: effectiveConstraints,
         child: GestureDetector(
-          onTap: () => showTimeZoneDropdown.value = true,
+          onTap: () => showDropdown.value = true,
           child: InputDecorator(
             decoration: inputDecoration,
             child: selectedItem.value != null
@@ -65,7 +69,12 @@ class DropdownSearchMenu<T> extends HookWidget {
                     overflow: TextOverflow.ellipsis,
                     style: textStyle,
                   )
-                : null,
+                : Text(
+                    hintText ?? "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textStyle,
+                  ),
           ),
         ),
       );
@@ -84,9 +93,15 @@ class DropdownSearchMenu<T> extends HookWidget {
           );
         },
         onSelected: (option) {
-          selectedItem.value = option;
-          showTimeZoneDropdown.value = false;
-          onSelected?.call(option.value);
+          if (clearOnSelection ?? false) {
+            selectedItem.value = null;
+            showDropdown.value = false;
+            onSelected?.call(option.value);
+          } else {
+            selectedItem.value = option;
+            showDropdown.value = false;
+            onSelected?.call(option.value);
+          }
         },
         fieldViewBuilder: (context, textEditingController, focusNode, _) {
           return TextField(
@@ -94,17 +109,21 @@ class DropdownSearchMenu<T> extends HookWidget {
             focusNode: focusNode,
             controller: textEditingController,
             decoration: inputDecoration.copyWith(
-              hintText: "search_timezone".tr(),
+              hintText: hintText,
             ),
             maxLines: 1,
             style: context.textTheme.bodyMedium,
             expands: false,
             onTapOutside: (event) {
-              showTimeZoneDropdown.value = false;
+              showDropdown.value = false;
               focusNode.unfocus();
             },
-            onSubmitted: (_) {
-              showTimeZoneDropdown.value = false;
+            onSubmitted: (value) {
+              if (clearOnSelection ?? false) {
+                selectedItem.value = null;
+              }
+              showDropdown.value = false;
+              onSubmitted?.call(value);
             },
           );
         },

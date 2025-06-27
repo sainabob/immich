@@ -184,7 +184,7 @@ class ImmichAppBar extends ConsumerWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.science_rounded),
             onPressed: () => context.pushRoute(const FeatInDevRoute()),
           ),
-        if (showUploadButton)
+        if (showUploadButton && user?.isAdmin == true)
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: buildBackupIndicator(),

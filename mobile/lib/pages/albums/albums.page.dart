@@ -31,7 +31,7 @@ class AlbumsPage extends HookConsumerWidget {
     final albumSortOption = ref.watch(albumSortByOptionsProvider);
     final albumSortIsReverse = ref.watch(albumSortOrderProvider);
     final sorted = albumSortOption.sortFn(albums, albumSortIsReverse);
-    final isGrid = useState(false);
+    final isGrid = useState(true);
     final searchController = useTextEditingController();
     final debounceTimer = useRef<Timer?>(null);
     final filterMode = useState(QuickFilterMode.all);
@@ -202,6 +202,7 @@ class AlbumsPage extends HookConsumerWidget {
                         childAspectRatio: .7,
                       ),
                       itemBuilder: (context, index) {
+                        debugPrint("sorted[index].id:$sorted");
                         return AlbumThumbnailCard(
                           album: sorted[index],
                           onTap: () => context.pushRoute(

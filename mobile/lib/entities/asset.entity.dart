@@ -74,6 +74,7 @@ class Asset {
     this.isOffline = false,
     this.thumbhash,
     this.visibility = AssetVisibilityEnum.timeline,
+    this.tags,
   });
 
   @ignore
@@ -169,6 +170,9 @@ class Asset {
 
   @ignore
   ExifInfo? exifInfo;
+
+  @ignore
+  List<TagResponseDto>? tags;
 
   String? stackId;
 

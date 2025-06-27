@@ -136,7 +136,10 @@ class AlbumRepository extends DatabaseRepository implements IAlbumRepository {
   ) async {
     var query = db.albums
         .filter()
-        .nameContains(searchTerm, caseSensitive: false)
+        .group((q) => q
+            .nameContains(searchTerm, caseSensitive: false)
+            .or()
+            .descriptionContains(searchTerm, caseSensitive: false))
         .remoteIdIsNotNull();
     final isarUserId = fastHash(Store.get(StoreKey.currentUser).id);
 

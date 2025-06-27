@@ -37,6 +37,7 @@ class ControlBottomAppBar extends HookConsumerWidget {
   final void Function()? onStack;
   final void Function()? onEditTime;
   final void Function()? onEditLocation;
+  final void Function()? onUpdateTags;
   final void Function()? onRemoveFromAlbum;
   final void Function()? onToggleLocked;
   final void Function()? onDownload;
@@ -63,6 +64,7 @@ class ControlBottomAppBar extends HookConsumerWidget {
     this.onEditLocation,
     this.onRemoveFromAlbum,
     this.onToggleLocked,
+    this.onUpdateTags,
     this.selectionAssetState = const AssetSelectionState(),
     this.enabled = true,
     this.unarchive = false,
@@ -283,6 +285,15 @@ class ControlBottomAppBar extends HookConsumerWidget {
               iconData: Icons.filter_none_rounded,
               label: "stack".tr(),
               onPressed: enabled ? onStack : null,
+            ),
+          ),
+        if (hasRemote && onUpdateTags != null)
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 90),
+            child: ControlBoxButton(
+              iconData: Icons.sell_outlined,
+              label: "tag".tr(),
+              onPressed: enabled ? onUpdateTags : null,
             ),
           ),
         if (onRemoveFromAlbum != null)
