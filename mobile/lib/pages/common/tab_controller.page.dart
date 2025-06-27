@@ -65,14 +65,28 @@ class TabControllerPage extends HookConsumerWidget {
 
     final navigationDestinations = [
       NavigationDestination(
-        label: 'photos'.tr(),
+        label: 'albums'.tr(),
         icon: const Icon(
-          Icons.photo_library_outlined,
+          Icons.photo_album_outlined,
+        ),
+        selectedIcon: buildIcon(
+          isProcessing: isRefreshingRemoteAlbums,
+          icon: Icon(
+            Icons.photo_album_rounded,
+            color: context.primaryColor,
+          ),
+        ),
+      ),
+      
+      NavigationDestination(
+        label: 'tags'.tr(),
+        icon: const Icon(
+          Icons.sell_outlined,
         ),
         selectedIcon: buildIcon(
           isProcessing: isRefreshingAssets,
           icon: Icon(
-            Icons.photo_library,
+            Icons.sell_rounded,
             color: context.primaryColor,
           ),
         ),
@@ -88,14 +102,14 @@ class TabControllerPage extends HookConsumerWidget {
         ),
       ),
       NavigationDestination(
-        label: 'albums'.tr(),
+        label: 'photos'.tr(),
         icon: const Icon(
-          Icons.photo_album_outlined,
+          Icons.photo_library_outlined,
         ),
         selectedIcon: buildIcon(
-          isProcessing: isRefreshingRemoteAlbums,
+          isProcessing: isRefreshingAssets,
           icon: Icon(
-            Icons.photo_album_rounded,
+            Icons.photo_library,
             color: context.primaryColor,
           ),
         ),
@@ -146,9 +160,10 @@ class TabControllerPage extends HookConsumerWidget {
     final multiselectEnabled = ref.watch(multiselectProvider);
     return AutoTabsRouter(
       routes: [
-        const PhotosRoute(),
-        SearchRoute(),
         const AlbumsRoute(),
+        TagsRoute(),
+        SearchRoute(),
+        const PhotosRoute(),
         const LibraryRoute(),
       ],
       duration: const Duration(milliseconds: 600),

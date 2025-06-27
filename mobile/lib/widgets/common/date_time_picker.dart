@@ -172,11 +172,15 @@ class _DateTimePicker extends HookWidget {
           ListTile(
             tileColor: context.colorScheme.surfaceContainerHighest,
             shape: ShapeBorder.lerp(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+              const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
               ),
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+              const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
               ),
               1,
             ),
@@ -197,7 +201,7 @@ class _DateTimePicker extends HookWidget {
               Icons.arrow_drop_down,
               color: context.primaryColor,
             ),
-            hintText: "timezone".tr(),
+            hintText: "search_timezone".tr(),
             label: const Text('timezone').tr(),
             textStyle: context.textTheme.bodyMedium,
             onSelected: (value) => tzOffset.value = value,

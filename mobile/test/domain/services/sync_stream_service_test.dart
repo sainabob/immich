@@ -1,5 +1,3 @@
-// ignore_for_file: avoid-declaring-call-method, avoid-unnecessary-futures
-
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -46,7 +44,6 @@ void main() {
 
     when(() => mockSyncApiRepo.streamChanges(any()))
         .thenAnswer((invocation) async {
-      // ignore: avoid-unsafe-collection-methods
       handleEventsCallback = invocation.positionalArguments.first;
     });
 
@@ -62,16 +59,28 @@ void main() {
         .thenAnswer(successHandler);
     when(() => mockSyncStreamRepo.updateAssetsV1(any()))
         .thenAnswer(successHandler);
+    when(
+      () => mockSyncStreamRepo.updateAssetsV1(
+        any(),
+        debugLabel: any(named: 'debugLabel'),
+      ),
+    ).thenAnswer(successHandler);
     when(() => mockSyncStreamRepo.deleteAssetsV1(any()))
         .thenAnswer(successHandler);
+    when(
+      () => mockSyncStreamRepo.deleteAssetsV1(
+        any(),
+        debugLabel: any(named: 'debugLabel'),
+      ),
+    ).thenAnswer(successHandler);
     when(() => mockSyncStreamRepo.updateAssetsExifV1(any()))
         .thenAnswer(successHandler);
-    when(() => mockSyncStreamRepo.updatePartnerAssetsV1(any()))
-        .thenAnswer(successHandler);
-    when(() => mockSyncStreamRepo.deletePartnerAssetsV1(any()))
-        .thenAnswer(successHandler);
-    when(() => mockSyncStreamRepo.updatePartnerAssetsExifV1(any()))
-        .thenAnswer(successHandler);
+    when(
+      () => mockSyncStreamRepo.updateAssetsExifV1(
+        any(),
+        debugLabel: any(named: 'debugLabel'),
+      ),
+    ).thenAnswer(successHandler);
 
     sut = SyncStreamService(
       syncApiRepository: mockSyncApiRepo,

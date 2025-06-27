@@ -9,6 +9,7 @@ import 'package:immich_mobile/models/folder/recursive_folder.model.dart';
 import 'package:immich_mobile/models/memories/memory.model.dart';
 import 'package:immich_mobile/models/search/search_filter.model.dart';
 import 'package:immich_mobile/models/shared_link/shared_link.model.dart';
+import 'package:immich_mobile/models/tags/recursive_tag.model.dart';
 import 'package:immich_mobile/models/upload/share_intent_attachment.model.dart';
 import 'package:immich_mobile/pages/album/album_additional_shared_user_selection.page.dart';
 import 'package:immich_mobile/pages/album/album_asset_selection.page.dart';
@@ -48,6 +49,7 @@ import 'package:immich_mobile/pages/library/people/people_collection.page.dart';
 import 'package:immich_mobile/pages/library/places/places_collection.page.dart';
 import 'package:immich_mobile/pages/library/shared_link/shared_link.page.dart';
 import 'package:immich_mobile/pages/library/shared_link/shared_link_edit.page.dart';
+import 'package:immich_mobile/pages/library/tags/tags.page.dart';
 import 'package:immich_mobile/pages/library/trash.page.dart';
 import 'package:immich_mobile/pages/login/change_password.page.dart';
 import 'package:immich_mobile/pages/login/login.page.dart';
@@ -68,6 +70,7 @@ import 'package:immich_mobile/presentation/pages/dev/feat_in_development.page.da
 import 'package:immich_mobile/presentation/pages/dev/local_timeline.page.dart';
 import 'package:immich_mobile/presentation/pages/dev/main_timeline.page.dart';
 import 'package:immich_mobile/presentation/pages/dev/media_stat.page.dart';
+import 'package:immich_mobile/presentation/pages/dev/remote_timeline.page.dart';
 import 'package:immich_mobile/providers/api.provider.dart';
 import 'package:immich_mobile/providers/gallery_permission.provider.dart';
 import 'package:immich_mobile/routing/auth_guard.dart';
@@ -80,6 +83,7 @@ import 'package:immich_mobile/services/local_auth.service.dart';
 import 'package:immich_mobile/services/secure_storage.service.dart';
 import 'package:immich_mobile/widgets/asset_grid/asset_grid_data_structure.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
+import 'package:openapi/api.dart';
 
 part 'router.gr.dart';
 
@@ -106,7 +110,7 @@ class AppRouter extends RootStackRouter {
     LocalAuthService localAuthService,
   ) {
     _authGuard = AuthGuard(apiService);
-    _duplicateGuard = DuplicateGuard();
+    _duplicateGuard = const DuplicateGuard();
     _lockedGuard =
         LockedGuard(apiService, secureStorageService, localAuthService);
     _backupPermissionGuard = BackupPermissionGuard(galleryPermissionNotifier);
@@ -136,6 +140,11 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           page: PhotosRoute.page,
           guards: [_authGuard, _duplicateGuard],
+        ),
+        AutoRoute(
+          page: TagsRoute.page,
+          guards: [_authGuard, _duplicateGuard],
+          maintainState: false,
         ),
         AutoRoute(
           page: SearchRoute.page,
@@ -262,6 +271,11 @@ class AppRouter extends RootStackRouter {
       guards: [_authGuard],
       transitionsBuilder: TransitionsBuilders.fadeIn,
     ),
+    CustomRoute(
+      page: TagsRoute.page,
+      guards: [_authGuard],
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+    ),
     AutoRoute(
       page: PartnerDetailRoute.page,
       guards: [_authGuard, _duplicateGuard],
@@ -363,6 +377,10 @@ class AppRouter extends RootStackRouter {
     ),
     AutoRoute(
       page: MainTimelineRoute.page,
+      guards: [_authGuard, _duplicateGuard],
+    ),
+    AutoRoute(
+      page: RemoteTimelineRoute.page,
       guards: [_authGuard, _duplicateGuard],
     ),
     // required to handle all deeplinks in deep_link.service.dart

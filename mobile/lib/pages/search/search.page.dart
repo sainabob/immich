@@ -23,6 +23,7 @@ import 'package:immich_mobile/widgets/search/search_filter/media_type_picker.dar
 import 'package:immich_mobile/widgets/search/search_filter/people_picker.dart';
 import 'package:immich_mobile/widgets/search/search_filter/search_filter_chip.dart';
 import 'package:immich_mobile/widgets/search/search_filter/search_filter_utils.dart';
+import 'package:immich_mobile/widgets/search/search_filter/tag_picker.dart';
 
 @RoutePage()
 class SearchPage extends HookConsumerWidget {
@@ -41,6 +42,7 @@ class SearchPage extends HookConsumerWidget {
         location: prefilter?.location ?? SearchLocationFilter(),
         camera: prefilter?.camera ?? SearchCameraFilter(),
         date: prefilter?.date ?? SearchDateFilter(),
+        tags: prefilter?.tags ?? SearchTagsFilter(),
         display: prefilter?.display ??
             SearchDisplayFilters(
               isNotInAlbum: false,
@@ -59,6 +61,7 @@ class SearchPage extends HookConsumerWidget {
     final dateRangeCurrentFilterWidget = useState<Widget?>(null);
     final cameraCurrentFilterWidget = useState<Widget?>(null);
     final locationCurrentFilterWidget = useState<Widget?>(null);
+    final tagCurrentFilterWidget = useState<Widget?>(null);
     final mediaTypeCurrentFilterWidget = useState<Widget?>(null);
     final displayOptionCurrentFilterWidget = useState<Widget?>(null);
 
@@ -243,6 +246,57 @@ class SearchPage extends HookConsumerWidget {
                 child: LocationPicker(
                   onSelected: handleOnSelect,
                   filter: filter.value.location,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    showTagSearchPicker() {
+      handleOnSelect(SearchTagsFilter value) {
+        filter.value = filter.value.copyWith(
+          tags: value,
+        );
+
+        tagCurrentFilterWidget.value = Text(
+          value.selectedTags != null
+              ? "${value.selectedTags?.length} tags"
+              : "no_tags",
+          style: context.textTheme.labelLarge,
+        );
+      }
+
+      handleClear() {
+        filter.value = filter.value.copyWith(
+          tags: SearchTagsFilter(),
+        );
+
+        tagCurrentFilterWidget.value = null;
+        search();
+      }
+
+      showFilterBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        isDismissible: true,
+        child: FilterBottomSheetScaffold(
+          title: 'search_filter_tag_title'.tr(),
+          expanded: true,
+          onSearch: search,
+          onClear: handleClear,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            child: Container(
+              padding: EdgeInsets.only(
+                bottom: context.viewInsets.bottom,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TagPicker(
+                  onSelected: handleOnSelect,
+                  filter: filter.value.tags,
                 ),
               ),
             ),
@@ -511,16 +565,11 @@ class SearchPage extends HookConsumerWidget {
       search();
     }
 
-    IconData getSearchPrefixIcon() {
-      switch (textSearchType.value) {
-        case TextSearchType.context:
-          return Icons.image_search_rounded;
-        case TextSearchType.filename:
-          return Icons.abc_rounded;
-        case TextSearchType.description:
-          return Icons.text_snippet_outlined;
-      }
-    }
+    IconData getSearchPrefixIcon() => switch (textSearchType.value) {
+          TextSearchType.context => Icons.image_search_rounded,
+          TextSearchType.filename => Icons.abc_rounded,
+          TextSearchType.description => Icons.text_snippet_outlined,
+        };
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -533,8 +582,10 @@ class SearchPage extends HookConsumerWidget {
               style: MenuStyle(
                 elevation: const WidgetStatePropertyAll(1),
                 shape: WidgetStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
+                  const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(24),
+                    ),
                   ),
                 ),
                 padding: const WidgetStatePropertyAll(
@@ -631,7 +682,9 @@ class SearchPage extends HookConsumerWidget {
               color: context.colorScheme.onSurface.withAlpha(0),
               width: 0,
             ),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(24),
+            ),
             gradient: LinearGradient(
               colors: [
                 context.colorScheme.primary.withValues(alpha: 0.075),
@@ -689,6 +742,12 @@ class SearchPage extends HookConsumerWidget {
                     onTap: showCameraPicker,
                     label: 'camera'.tr(),
                     currentFilter: cameraCurrentFilterWidget.value,
+                  ),
+                  SearchFilterChip(
+                    icon: Icons.sell_outlined,
+                    onTap: showTagSearchPicker,
+                    label: 'tag'.tr(),
+                    currentFilter: tagCurrentFilterWidget.value,
                   ),
                   SearchFilterChip(
                     icon: Icons.date_range_outlined,
@@ -823,7 +882,9 @@ class QuickLinkList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(20),
+        ),
         border: Border.all(
           color: context.colorScheme.outline.withAlpha(10),
           width: 1,

@@ -74,6 +74,7 @@ class Asset {
     this.isOffline = false,
     this.thumbhash,
     this.visibility = AssetVisibilityEnum.timeline,
+    this.tags,
   });
 
   @ignore
@@ -169,6 +170,9 @@ class Asset {
 
   @ignore
   ExifInfo? exifInfo;
+
+  @ignore
+  List<TagResponseDto>? tags;
 
   String? stackId;
 
@@ -554,18 +558,12 @@ class Asset {
 }""";
   }
 
-  static getVisibility(AssetVisibility visibility) {
-    switch (visibility) {
-      case AssetVisibility.timeline:
-        return AssetVisibilityEnum.timeline;
-      case AssetVisibility.archive:
-        return AssetVisibilityEnum.archive;
-      case AssetVisibility.hidden:
-        return AssetVisibilityEnum.hidden;
-      case AssetVisibility.locked:
-        return AssetVisibilityEnum.locked;
-    }
-  }
+  static getVisibility(AssetVisibility visibility) => switch (visibility) {
+        AssetVisibility.archive => AssetVisibilityEnum.archive,
+        AssetVisibility.hidden => AssetVisibilityEnum.hidden,
+        AssetVisibility.locked => AssetVisibilityEnum.locked,
+        AssetVisibility.timeline || _ => AssetVisibilityEnum.timeline,
+      };
 }
 
 enum AssetType {

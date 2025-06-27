@@ -744,6 +744,53 @@ class FolderRouteArgs {
 }
 
 /// generated route for
+/// [TagsPage]
+class TagsRoute extends PageRouteInfo<TagsRouteArgs> {
+  TagsRoute({
+    Key? key,
+    TagResponseDto? folder,
+    List<PageRouteInfo>? children,
+  }) : super(
+          TagsRoute.name,
+          args: TagsRouteArgs(
+            key: key,
+            folder: folder,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'TagsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args =
+          data.argsAs<TagsRouteArgs>(orElse: () => const TagsRouteArgs());
+      return TagsPage(
+        key: args.key,
+        initalTag: args.folder,
+      );
+    },
+  );
+}
+
+class TagsRouteArgs {
+  const TagsRouteArgs({
+    this.key,
+    this.folder,
+  });
+
+  final Key? key;
+
+  final TagResponseDto? folder;
+
+  @override
+  String toString() {
+    return 'TagsRouteArgs{key: $key, folder: $folder}';
+  }
+}
+
+/// generated route for
 /// [GalleryViewerPage]
 class GalleryViewerRoute extends PageRouteInfo<GalleryViewerRouteArgs> {
   GalleryViewerRoute({
@@ -1423,6 +1470,43 @@ class RemoteMediaSummaryRoute extends PageRouteInfo<void> {
       return const RemoteMediaSummaryPage();
     },
   );
+}
+
+/// generated route for
+/// [RemoteTimelinePage]
+class RemoteTimelineRoute extends PageRouteInfo<RemoteTimelineRouteArgs> {
+  RemoteTimelineRoute({
+    Key? key,
+    required String albumId,
+    List<PageRouteInfo>? children,
+  }) : super(
+          RemoteTimelineRoute.name,
+          args: RemoteTimelineRouteArgs(key: key, albumId: albumId),
+          initialChildren: children,
+        );
+
+  static const String name = 'RemoteTimelineRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RemoteTimelineRouteArgs>();
+      return RemoteTimelinePage(key: args.key, albumId: args.albumId);
+    },
+  );
+}
+
+class RemoteTimelineRouteArgs {
+  const RemoteTimelineRouteArgs({this.key, required this.albumId});
+
+  final Key? key;
+
+  final String albumId;
+
+  @override
+  String toString() {
+    return 'RemoteTimelineRouteArgs{key: $key, albumId: $albumId}';
+  }
 }
 
 /// generated route for

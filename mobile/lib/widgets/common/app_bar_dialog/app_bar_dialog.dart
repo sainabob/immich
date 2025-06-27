@@ -246,7 +246,7 @@ class ImmichAppBarDialog extends HookConsumerWidget {
               onTap: () {
                 context.pop();
                 launchUrl(
-                  Uri.parse('https://github.com/immich-app/immich'),
+                  Uri.parse('https://github.com/sainabob/immich'),
                   mode: LaunchMode.externalApplication,
                 );
               },
@@ -274,8 +274,10 @@ class ImmichAppBarDialog extends HookConsumerWidget {
           right: horizontalPadding,
           bottom: isHorizontal ? 20 : 100,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
         ),
         child: SizedBox(
           child: SingleChildScrollView(

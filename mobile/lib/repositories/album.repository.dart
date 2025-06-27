@@ -18,7 +18,7 @@ final albumRepositoryProvider =
     Provider((ref) => AlbumRepository(ref.watch(dbProvider)));
 
 class AlbumRepository extends DatabaseRepository {
-  AlbumRepository(super.db);
+  const AlbumRepository(super.db);
 
   Future<int> count({bool? local}) {
     final baseQuery = db.albums.where();
@@ -127,7 +127,10 @@ class AlbumRepository extends DatabaseRepository {
   ) async {
     var query = db.albums
         .filter()
-        .nameContains(searchTerm, caseSensitive: false)
+        .group((q) => q
+            .nameContains(searchTerm, caseSensitive: false)
+            .or()
+            .descriptionContains(searchTerm, caseSensitive: false))
         .remoteIdIsNotNull();
     final isarUserId = fastHash(Store.get(StoreKey.currentUser).id);
 

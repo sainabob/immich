@@ -33,6 +33,7 @@ class ApiService implements Authentication {
   late TrashApi trashApi;
   late StacksApi stacksApi;
   late ViewApi viewApi;
+  late TagsApi tagsApi;
   late MemoriesApi memoriesApi;
   late SessionsApi sessionsApi;
 
@@ -72,6 +73,7 @@ class ApiService implements Authentication {
     trashApi = TrashApi(_apiClient);
     stacksApi = StacksApi(_apiClient);
     viewApi = ViewApi(_apiClient);
+    tagsApi = TagsApi(_apiClient);
     memoriesApi = MemoriesApi(_apiClient);
     sessionsApi = SessionsApi(_apiClient);
   }

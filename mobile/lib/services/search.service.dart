@@ -55,6 +55,8 @@ class SearchService {
         type = AssetTypeEnum.VIDEO;
       }
 
+      var tagIds = filter.tags.selectedTags?.map((e) => e.id).toList() ?? [];
+
       if (filter.context != null && filter.context!.isNotEmpty) {
         response = await _apiService.searchApi.searchSmart(
           SmartSearchDto(
@@ -73,6 +75,7 @@ class SearchService {
             isFavorite: filter.display.isFavorite ? true : null,
             isNotInAlbum: filter.display.isNotInAlbum ? true : null,
             personIds: filter.people.map((e) => e.id).toList(),
+            tagIds: tagIds,
             type: type,
             page: page,
             size: 1000,
@@ -102,6 +105,7 @@ class SearchService {
             isFavorite: filter.display.isFavorite ? true : null,
             isNotInAlbum: filter.display.isNotInAlbum ? true : null,
             personIds: filter.people.map((e) => e.id).toList(),
+            tagIds: tagIds,
             type: type,
             page: page,
             size: 1000,
@@ -130,6 +134,15 @@ class SearchService {
       return await _apiService.searchApi.getExploreData();
     } catch (error, stackTrace) {
       _log.severe("Failed to getExploreData", error, stackTrace);
+    }
+    return null;
+  }
+
+  Future<List<TagResponseDto>?> getAllTags() async {
+    try {
+      return await _apiService.tagsApi.getAllTags();
+    } catch (error, stackTrace) {
+      _log.severe("Failed to getAllTags", error, stackTrace);
     }
     return null;
   }
