@@ -20,6 +20,20 @@ limit
 offset
   $7
 
+-- SearchRepository.searchStatistics
+select
+  count(*) as "total"
+from
+  "assets"
+  inner join "exif" on "assets"."id" = "exif"."assetId"
+where
+  "assets"."visibility" = $1
+  and "assets"."fileCreatedAt" >= $2
+  and "exif"."lensModel" = $3
+  and "assets"."ownerId" = any ($4::uuid[])
+  and "assets"."isFavorite" = $5
+  and "assets"."deletedAt" is null
+
 -- SearchRepository.searchRandom
 (
   select
@@ -86,39 +100,6 @@ limit
   $7
 offset
   $8
-commit
-
--- SearchRepository.searchDuplicates
-begin
-set
-  local vchordrq.probes = 1
-with
-  "cte" as (
-    select
-      "assets"."id" as "assetId",
-      "assets"."duplicateId",
-      smart_search.embedding <=> $1 as "distance"
-    from
-      "assets"
-      inner join "smart_search" on "assets"."id" = "smart_search"."assetId"
-    where
-      "assets"."visibility" in ('archive', 'timeline')
-      and "assets"."ownerId" = any ($2::uuid[])
-      and "assets"."deletedAt" is null
-      and "assets"."type" = $3
-      and "assets"."id" != $4::uuid
-      and "assets"."stackId" is null
-    order by
-      "distance"
-    limit
-      $5
-  )
-select
-  *
-from
-  "cte"
-where
-  "cte"."distance" <= $6
 commit
 
 -- SearchRepository.searchFaces

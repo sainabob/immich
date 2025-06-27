@@ -32,6 +32,7 @@ import 'package:immich_mobile/pages/common/native_video_viewer.page.dart';
 import 'package:immich_mobile/pages/common/settings.page.dart';
 import 'package:immich_mobile/pages/common/splash_screen.page.dart';
 import 'package:immich_mobile/pages/common/tab_controller.page.dart';
+import 'package:immich_mobile/pages/common/tab_shell.page.dart';
 import 'package:immich_mobile/pages/editing/crop.page.dart';
 import 'package:immich_mobile/pages/editing/edit.page.dart';
 import 'package:immich_mobile/pages/editing/filter.page.dart';
@@ -66,7 +67,10 @@ import 'package:immich_mobile/pages/search/recently_taken.page.dart';
 import 'package:immich_mobile/pages/search/search.page.dart';
 import 'package:immich_mobile/pages/share_intent/share_intent.page.dart';
 import 'package:immich_mobile/presentation/pages/dev/feat_in_development.page.dart';
+import 'package:immich_mobile/presentation/pages/dev/local_timeline.page.dart';
+import 'package:immich_mobile/presentation/pages/dev/main_timeline.page.dart';
 import 'package:immich_mobile/presentation/pages/dev/media_stat.page.dart';
+import 'package:immich_mobile/presentation/pages/dev/remote_timeline.page.dart';
 import 'package:immich_mobile/providers/api.provider.dart';
 import 'package:immich_mobile/providers/gallery_permission.provider.dart';
 import 'package:immich_mobile/routing/auth_guard.dart';
@@ -106,7 +110,7 @@ class AppRouter extends RootStackRouter {
     LocalAuthService localAuthService,
   ) {
     _authGuard = AuthGuard(apiService);
-    _duplicateGuard = DuplicateGuard();
+    _duplicateGuard = const DuplicateGuard();
     _lockedGuard =
         LockedGuard(apiService, secureStorageService, localAuthService);
     _backupPermissionGuard = BackupPermissionGuard(galleryPermissionNotifier);
@@ -141,6 +145,30 @@ class AppRouter extends RootStackRouter {
           page: TagsRoute.page,
           guards: [_authGuard, _duplicateGuard],
           maintainState: false,
+        ),
+        AutoRoute(
+          page: SearchRoute.page,
+          guards: [_authGuard, _duplicateGuard],
+          maintainState: false,
+        ),
+        AutoRoute(
+          page: LibraryRoute.page,
+          guards: [_authGuard, _duplicateGuard],
+        ),
+        AutoRoute(
+          page: AlbumsRoute.page,
+          guards: [_authGuard, _duplicateGuard],
+        ),
+      ],
+      transitionsBuilder: TransitionsBuilders.fadeIn,
+    ),
+    CustomRoute(
+      page: TabShellRoute.page,
+      guards: [_authGuard, _duplicateGuard],
+      children: [
+        AutoRoute(
+          page: MainTimelineRoute.page,
+          guards: [_authGuard, _duplicateGuard],
         ),
         AutoRoute(
           page: SearchRoute.page,
@@ -343,5 +371,20 @@ class AppRouter extends RootStackRouter {
       page: RemoteMediaSummaryRoute.page,
       guards: [_authGuard, _duplicateGuard],
     ),
+    AutoRoute(
+      page: LocalTimelineRoute.page,
+      guards: [_authGuard, _duplicateGuard],
+    ),
+    AutoRoute(
+      page: MainTimelineRoute.page,
+      guards: [_authGuard, _duplicateGuard],
+    ),
+    AutoRoute(
+      page: RemoteTimelineRoute.page,
+      guards: [_authGuard, _duplicateGuard],
+    ),
+    // required to handle all deeplinks in deep_link.service.dart
+    // auto_route_library#1722
+    RedirectRoute(path: '*', redirectTo: '/'),
   ];
 }

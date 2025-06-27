@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:immich_mobile/entities/asset.entity.dart';
 import 'package:immich_mobile/interfaces/person_api.interface.dart';
 import 'package:openapi/api.dart';
+import 'package:immich_mobile/domain/models/person.model.dart';
 
 class SearchLocationFilter {
   String? country;

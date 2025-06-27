@@ -8,13 +8,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:immich_mobile/extensions/build_context_extensions.dart';
 import 'package:immich_mobile/extensions/theme_extensions.dart';
+import 'package:immich_mobile/extensions/translate_extensions.dart';
 import 'package:immich_mobile/models/albums/album_search.model.dart';
 import 'package:immich_mobile/pages/common/large_leading_tile.dart';
 import 'package:immich_mobile/providers/album/album.provider.dart';
 import 'package:immich_mobile/providers/album/album_sort_by_options.provider.dart';
 import 'package:immich_mobile/providers/user.provider.dart';
 import 'package:immich_mobile/routing/router.dart';
-import 'package:immich_mobile/utils/translation.dart';
 import 'package:immich_mobile/widgets/album/album_thumbnail_card.dart';
 import 'package:immich_mobile/widgets/common/immich_app_bar.dart';
 import 'package:immich_mobile/widgets/common/immich_thumbnail.dart';
@@ -105,7 +105,9 @@ class AlbumsPage extends HookConsumerWidget {
                   color: context.colorScheme.onSurface.withAlpha(0),
                   width: 0,
                 ),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(24),
+                ),
                 gradient: LinearGradient(
                   colors: [
                     context.colorScheme.primary.withValues(alpha: 0.075),
@@ -231,11 +233,17 @@ class AlbumsPage extends HookConsumerWidget {
                             ),
                             subtitle: sorted[index].ownerId != null
                                 ? Text(
-                                    '${t('items_count', {
-                                          'count': sorted[index].assetCount,
-                                        })} • ${sorted[index].ownerId != userId ? t('shared_by_user', {
-                                            'user': sorted[index].ownerName!,
-                                          }) : 'owned'.tr()}',
+                                    '${'items_count'.t(
+                                      context: context,
+                                      args: {
+                                        'count': sorted[index].assetCount,
+                                      },
+                                    )} • ${sorted[index].ownerId != userId ? 'shared_by_user'.t(
+                                        context: context,
+                                        args: {
+                                          'user': sorted[index].ownerName!,
+                                        },
+                                      ) : 'owned'.t(context: context)}',
                                     overflow: TextOverflow.ellipsis,
                                     style:
                                         context.textTheme.bodyMedium?.copyWith(
@@ -296,7 +304,9 @@ class QuickFilterButton extends StatelessWidget {
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
             side: BorderSide(
               color: context.colorScheme.onSurface.withAlpha(25),
               width: 1,
@@ -329,8 +339,10 @@ class SortButton extends ConsumerWidget {
       style: MenuStyle(
         elevation: const WidgetStatePropertyAll(1),
         shape: WidgetStateProperty.all(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+          const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(24),
+            ),
           ),
         ),
         padding: const WidgetStatePropertyAll(
@@ -379,8 +391,10 @@ class SortButton extends ConsumerWidget {
                       : Colors.transparent,
                 ),
                 shape: WidgetStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
+                  const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(24),
+                    ),
                   ),
                 ),
               ),

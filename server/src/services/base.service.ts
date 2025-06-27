@@ -18,6 +18,7 @@ import { CronRepository } from 'src/repositories/cron.repository';
 import { CryptoRepository } from 'src/repositories/crypto.repository';
 import { DatabaseRepository } from 'src/repositories/database.repository';
 import { DownloadRepository } from 'src/repositories/download.repository';
+import { DuplicateRepository } from 'src/repositories/duplicate.repository';
 import { EmailRepository } from 'src/repositories/email.repository';
 import { EventRepository } from 'src/repositories/event.repository';
 import { JobRepository } from 'src/repositories/job.repository';
@@ -52,6 +53,53 @@ import { UserTable } from 'src/schema/tables/user.table';
 import { AccessRequest, checkAccess, requireAccess } from 'src/utils/access';
 import { getConfig, updateConfig } from 'src/utils/config';
 
+export const BASE_SERVICE_DEPENDENCIES = [
+  LoggingRepository,
+  AccessRepository,
+  ActivityRepository,
+  AlbumRepository,
+  AlbumUserRepository,
+  ApiKeyRepository,
+  AssetRepository,
+  AssetJobRepository,
+  AuditRepository,
+  ConfigRepository,
+  CronRepository,
+  CryptoRepository,
+  DatabaseRepository,
+  DownloadRepository,
+  DuplicateRepository,
+  EmailRepository,
+  EventRepository,
+  JobRepository,
+  LibraryRepository,
+  MachineLearningRepository,
+  MapRepository,
+  MediaRepository,
+  MemoryRepository,
+  MetadataRepository,
+  MoveRepository,
+  NotificationRepository,
+  OAuthRepository,
+  PartnerRepository,
+  PersonRepository,
+  ProcessRepository,
+  SearchRepository,
+  ServerInfoRepository,
+  SessionRepository,
+  SharedLinkRepository,
+  StackRepository,
+  StorageRepository,
+  SyncRepository,
+  SystemMetadataRepository,
+  TagRepository,
+  TelemetryRepository,
+  TrashRepository,
+  UserRepository,
+  VersionHistoryRepository,
+  ViewRepository,
+];
+
 @Injectable()
 export class BaseService {
   protected storageCore: StorageCore;
@@ -71,6 +119,7 @@ export class BaseService {
     protected cryptoRepository: CryptoRepository,
     protected databaseRepository: DatabaseRepository,
     protected downloadRepository: DownloadRepository,
+    protected duplicateRepository: DuplicateRepository,
     protected emailRepository: EmailRepository,
     protected eventRepository: EventRepository,
     protected jobRepository: JobRepository,

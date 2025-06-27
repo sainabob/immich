@@ -2698,6 +2698,39 @@
       }
     },
     "/duplicates": {
+      "delete": {
+        "operationId": "deleteDuplicates",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIdsDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Duplicates"
+        ]
+      },
       "get": {
         "operationId": "getAssetDuplicates",
         "parameters": [],
@@ -2713,6 +2746,41 @@
                 }
               }
             },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Duplicates"
+        ]
+      }
+    },
+    "/duplicates/{id}": {
+      "delete": {
+        "operationId": "deleteDuplicate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": ""
           }
         },
@@ -3599,6 +3667,72 @@
         ]
       }
     },
+    "/memories/statistics": {
+      "get": {
+        "operationId": "memoriesStatistics",
+        "parameters": [
+          {
+            "name": "for",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isSaved",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "isTrashed",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/MemoryType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemoryStatisticsResponseDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Memories"
+        ]
+      }
+    },
     "/memories/{id}": {
       "delete": {
         "operationId": "deleteMemory",
@@ -4412,6 +4546,39 @@
       }
     },
     "/people": {
+      "delete": {
+        "operationId": "deletePeople",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkIdsDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "People"
+        ]
+      },
       "get": {
         "operationId": "getAllPeople",
         "parameters": [
@@ -4577,6 +4744,39 @@
       }
     },
     "/people/{id}": {
+      "delete": {
+        "operationId": "deletePerson",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "People"
+        ]
+      },
       "get": {
         "operationId": "getPerson",
         "parameters": [
@@ -5136,6 +5336,48 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SearchResponseDto"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "cookie": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/search/statistics": {
+      "post": {
+        "operationId": "searchAssetStatistics",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatisticsSearchDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchStatisticsResponseDto"
                 }
               }
             },
@@ -8327,7 +8569,7 @@
   "info": {
     "title": "Immich",
     "description": "Immich API",
-    "version": "1.134.0",
+    "version": "1.135.3",
     "contact": {}
   },
   "tags": [],
@@ -8716,6 +8958,34 @@
           "viewer"
         ],
         "type": "string"
+      },
+      "AlbumsResponse": {
+        "properties": {
+          "defaultAssetOrder": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssetOrder"
+              }
+            ],
+            "default": "desc"
+          }
+        },
+        "required": [
+          "defaultAssetOrder"
+        ],
+        "type": "object"
+      },
+      "AlbumsUpdate": {
+        "properties": {
+          "defaultAssetOrder": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssetOrder"
+              }
+            ]
+          }
+        },
+        "type": "object"
       },
       "AllJobStatusResponseDto": {
         "properties": {
@@ -9265,6 +9535,9 @@
             "format": "date-time",
             "type": "string"
           },
+          "filename": {
+            "type": "string"
+          },
           "isFavorite": {
             "type": "boolean"
           },
@@ -9314,6 +9587,9 @@
           },
           "fileModifiedAt": {
             "format": "date-time",
+            "type": "string"
+          },
+          "filename": {
             "type": "string"
           }
         },
@@ -10757,6 +11033,17 @@
         ],
         "type": "object"
       },
+      "MemoryStatisticsResponseDto": {
+        "properties": {
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total"
+        ],
+        "type": "object"
+      },
       "MemoryType": {
         "enum": [
           "on_this_day"
@@ -10796,6 +11083,13 @@
       },
       "MetadataSearchDto": {
         "properties": {
+          "albumIds": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
           "checksum": {
             "type": "string"
           },
@@ -11715,6 +12009,13 @@
       },
       "RandomSearchDto": {
         "properties": {
+          "albumIds": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
           "city": {
             "nullable": true,
             "type": "string"
@@ -12038,6 +12339,17 @@
         "required": [
           "albums",
           "assets"
+        ],
+        "type": "object"
+      },
+      "SearchStatisticsResponseDto": {
+        "properties": {
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total"
         ],
         "type": "object"
       },
@@ -12752,6 +13064,13 @@
       },
       "SmartSearchDto": {
         "properties": {
+          "albumIds": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
           "city": {
             "nullable": true,
             "type": "string"
@@ -12946,6 +13265,132 @@
         },
         "type": "object"
       },
+      "StatisticsSearchDto": {
+        "properties": {
+          "albumIds": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "city": {
+            "nullable": true,
+            "type": "string"
+          },
+          "country": {
+            "nullable": true,
+            "type": "string"
+          },
+          "createdAfter": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "createdBefore": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deviceId": {
+            "type": "string"
+          },
+          "isEncoded": {
+            "type": "boolean"
+          },
+          "isFavorite": {
+            "type": "boolean"
+          },
+          "isMotion": {
+            "type": "boolean"
+          },
+          "isNotInAlbum": {
+            "type": "boolean"
+          },
+          "isOffline": {
+            "type": "boolean"
+          },
+          "lensModel": {
+            "nullable": true,
+            "type": "string"
+          },
+          "libraryId": {
+            "format": "uuid",
+            "nullable": true,
+            "type": "string"
+          },
+          "make": {
+            "type": "string"
+          },
+          "model": {
+            "nullable": true,
+            "type": "string"
+          },
+          "personIds": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": -1,
+            "type": "number"
+          },
+          "state": {
+            "nullable": true,
+            "type": "string"
+          },
+          "tagIds": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "takenAfter": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "takenBefore": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "trashedAfter": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "trashedBefore": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssetTypeEnum"
+              }
+            ]
+          },
+          "updatedAfter": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedBefore": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "visibility": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssetVisibility"
+              }
+            ]
+          }
+        },
+        "type": "object"
+      },
       "SyncAckDeleteDto": {
         "properties": {
           "types": {
@@ -12982,12 +13427,17 @@
             "items": {
               "type": "string"
             },
+            "maxItems": 1000,
             "type": "array"
           }
         },
         "required": [
           "acks"
         ],
+        "type": "object"
+      },
+      "SyncAckV1": {
+        "properties": {},
         "type": "object"
       },
       "SyncAlbumDeleteV1": {
@@ -12998,6 +13448,36 @@
         },
         "required": [
           "albumId"
+        ],
+        "type": "object"
+      },
+      "SyncAlbumToAssetDeleteV1": {
+        "properties": {
+          "albumId": {
+            "type": "string"
+          },
+          "assetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "albumId",
+          "assetId"
+        ],
+        "type": "object"
+      },
+      "SyncAlbumToAssetV1": {
+        "properties": {
+          "albumId": {
+            "type": "string"
+          },
+          "assetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "albumId",
+          "assetId"
         ],
         "type": "object"
       },
@@ -13243,6 +13723,10 @@
             "nullable": true,
             "type": "string"
           },
+          "duration": {
+            "nullable": true,
+            "type": "string"
+          },
           "fileCreatedAt": {
             "format": "date-time",
             "nullable": true,
@@ -13292,6 +13776,7 @@
         "required": [
           "checksum",
           "deletedAt",
+          "duration",
           "fileCreatedAt",
           "fileModifiedAt",
           "id",
@@ -13315,12 +13800,23 @@
           "AssetDeleteV1",
           "AssetExifV1",
           "PartnerAssetV1",
+          "PartnerAssetBackfillV1",
           "PartnerAssetDeleteV1",
           "PartnerAssetExifV1",
+          "PartnerAssetExifBackfillV1",
           "AlbumV1",
           "AlbumDeleteV1",
           "AlbumUserV1",
-          "AlbumUserDeleteV1"
+          "AlbumUserBackfillV1",
+          "AlbumUserDeleteV1",
+          "AlbumAssetV1",
+          "AlbumAssetBackfillV1",
+          "AlbumAssetExifV1",
+          "AlbumAssetExifBackfillV1",
+          "AlbumToAssetV1",
+          "AlbumToAssetDeleteV1",
+          "AlbumToAssetBackfillV1",
+          "SyncAckV1"
         ],
         "type": "string"
       },
@@ -13367,7 +13863,10 @@
           "PartnerAssetsV1",
           "PartnerAssetExifsV1",
           "AlbumsV1",
-          "AlbumUsersV1"
+          "AlbumUsersV1",
+          "AlbumToAssetsV1",
+          "AlbumAssetsV1",
+          "AlbumAssetExifsV1"
         ],
         "type": "string"
       },
@@ -13965,8 +14464,10 @@
             "type": "string"
           },
           "defaultStorageQuota": {
+            "format": "int64",
             "minimum": 0,
-            "type": "number"
+            "nullable": true,
+            "type": "integer"
           },
           "enabled": {
             "type": "boolean"
@@ -14826,6 +15327,9 @@
             "format": "email",
             "type": "string"
           },
+          "isAdmin": {
+            "type": "boolean"
+          },
           "name": {
             "type": "string"
           },
@@ -14976,6 +15480,9 @@
             "format": "email",
             "type": "string"
           },
+          "isAdmin": {
+            "type": "boolean"
+          },
           "name": {
             "type": "string"
           },
@@ -15040,6 +15547,9 @@
       },
       "UserPreferencesResponseDto": {
         "properties": {
+          "albums": {
+            "$ref": "#/components/schemas/AlbumsResponse"
+          },
           "cast": {
             "$ref": "#/components/schemas/CastResponse"
           },
@@ -15072,6 +15582,7 @@
           }
         },
         "required": [
+          "albums",
           "cast",
           "download",
           "emailNotifications",
@@ -15087,6 +15598,9 @@
       },
       "UserPreferencesUpdateDto": {
         "properties": {
+          "albums": {
+            "$ref": "#/components/schemas/AlbumsUpdate"
+          },
           "avatar": {
             "$ref": "#/components/schemas/AvatarUpdate"
           },
