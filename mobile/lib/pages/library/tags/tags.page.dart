@@ -212,17 +212,44 @@ class TagsPage extends HookConsumerWidget {
           Expanded(
             child: ref.read(tagsRenderListProvider(currentTag.value)).when(
               data: (result) {
-                return Column(
-                  children: [
+                // 使用CustomScrollView将相册和照片放在同一个滚动容器中
+                return CustomScrollView(
+                  slivers: [
                     // 显示相册网格
-                    buildAlbumGrid(result.albums),
-                    // 显示资产网格
-                    Expanded(
+                    
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        sliver: SliverGrid(
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 250,
+                            mainAxisSpacing: 12,
+                            crossAxisSpacing: 12,
+                            childAspectRatio: .7,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final album = result.albums[index];
+                              return AlbumGridItem(album: album);
+                            },
+                            childCount: result.albums.length,
+                          ),
+                        ),
+                      ),
+                      const SliverToBoxAdapter(
+                        child: SizedBox(height: 24),
+                      ),
+                    
+                    // 显示照片网格
+                    SliverFillRemaining(
                       child: MultiselectGrid(
-                        renderListProvider: Provider((ref) => ref.watch(tagsRenderListProvider(currentTag.value)).whenData((result) => result.assets)),
+                        renderListProvider: Provider((ref) => 
+                          ref.watch(tagsRenderListProvider(currentTag.value))
+                            .whenData((result) => result.assets)
+                        ),
                         favoriteEnabled: true,
                         editEnabled: true,
                         unfavorite: true,
+                        emptyIndicator: result.albums.isNotEmpty ? const SizedBox.shrink() : null,
                       ),
                     ),
                   ],

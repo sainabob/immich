@@ -13,7 +13,7 @@
 <section class="min-w-dvw flex min-h-dvh items-center justify-center relative">
   <div class="absolute -z-10 w-full h-full flex place-items-center place-content-center">
     <img
-      src={immichLogo}
+      src="/favicon-96.png"
       class="max-w-(--breakpoint-md) mx-auto h-full mb-2 antialiased overflow-hidden"
       alt="Immich logo"
     />
