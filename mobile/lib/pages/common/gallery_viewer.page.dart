@@ -363,11 +363,8 @@ class GalleryViewerPage extends HookConsumerWidget {
               },
               pageController: controller,
               scrollPhysics: isZoomed.value
-                  ? const NeverScrollableScrollPhysics() // Don't allow paging while scrolled in
-                  : (Platform.isIOS
-                      ? const FastScrollPhysics() // Use bouncing physics for iOS
-                      : const FastClampingScrollPhysics() // Use heavy physics for Android
-                  ),
+                  ? const NeverScrollableScrollPhysics() // 放大时不允许滑动
+                  : const ClampingScrollPhysics(), // 使用 Flutter 内置的无弹性效果
               itemCount: totalAssets.value,
               scrollDirection: Axis.horizontal,
               onPageChanged: (value) {
