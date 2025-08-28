@@ -21,11 +21,7 @@ class TimelineService {
   final AppSettingsService _appSettingsService;
   final UserService _userService;
 
-  const TimelineService(
-    this._timelineRepository,
-    this._appSettingsService,
-    this._userService,
-  );
+  const TimelineService(this._timelineRepository, this._appSettingsService, this._userService);
 
   Future<List<String>> getTimelineUserIds() async {
     final me = _userService.getMyUser();
@@ -42,10 +38,7 @@ class TimelineService {
   }
 
   Stream<RenderList> watchMultiUsersTimeline(List<String> userIds) {
-    return _timelineRepository.watchMultiUsersTimeline(
-      userIds,
-      _getGroupByOption(),
-    );
+    return _timelineRepository.watchMultiUsersTimeline(userIds, _getGroupByOption());
   }
 
   Stream<RenderList> watchArchiveTimeline() async* {
@@ -68,10 +61,7 @@ class TimelineService {
   }
 
   Stream<RenderList> watchAlbumTimeline(Album album) async* {
-    yield* _timelineRepository.watchAlbumTimeline(
-      album,
-      _getGroupByOption(),
-    );
+    yield* _timelineRepository.watchAlbumTimeline(album, _getGroupByOption());
   }
 
   Stream<RenderList> watchTrashTimeline() async* {
@@ -86,10 +76,7 @@ class TimelineService {
     return _timelineRepository.watchAllVideosTimeline(user.id);
   }
 
-  Future<RenderList> getTimelineFromAssets(
-    List<Asset> assets,
-    GroupAssetsBy? groupBy,
-  ) {
+  Future<RenderList> getTimelineFromAssets(List<Asset> assets, GroupAssetsBy? groupBy) {
     GroupAssetsBy groupOption = GroupAssetsBy.none;
     if (groupBy == null) {
       groupOption = _getGroupByOption();
@@ -97,10 +84,7 @@ class TimelineService {
       groupOption = groupBy;
     }
 
-    return _timelineRepository.getTimelineFromAssets(
-      assets,
-      groupOption,
-    );
+    return _timelineRepository.getTimelineFromAssets(assets, groupOption);
   }
 
   Stream<RenderList> watchAssetSelectionTimeline() async* {
@@ -110,16 +94,12 @@ class TimelineService {
   }
 
   GroupAssetsBy _getGroupByOption() {
-    return GroupAssetsBy
-        .values[_appSettingsService.getSetting(AppSettingsEnum.groupAssetsBy)];
+    return GroupAssetsBy.values[_appSettingsService.getSetting(AppSettingsEnum.groupAssetsBy)];
   }
 
   Stream<RenderList> watchLockedTimelineProvider() async* {
     final user = _userService.getMyUser();
 
-    yield* _timelineRepository.watchLockedTimeline(
-      user.id,
-      _getGroupByOption(),
-    );
+    yield* _timelineRepository.watchLockedTimeline(user.id, _getGroupByOption());
   }
 }

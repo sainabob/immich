@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:immich_mobile/extensions/string_extensions.dart';
+import 'package:immich_mobile/infrastructure/repositories/search_api.repository.dart';
 import 'package:immich_mobile/models/search/search_filter.model.dart';
-import 'package:immich_mobile/entities/asset.entity.dart';
 import 'package:immich_mobile/models/search/search_result.model.dart';
 import 'package:immich_mobile/providers/api.provider.dart';
+import 'package:immich_mobile/providers/infrastructure/search.provider.dart';
 import 'package:immich_mobile/repositories/asset.repository.dart';
 import 'package:immich_mobile/services/api.service.dart';
 import 'package:logging/logging.dart';
@@ -14,15 +15,17 @@ final searchServiceProvider = Provider(
   (ref) => SearchService(
     ref.watch(apiServiceProvider),
     ref.watch(assetRepositoryProvider),
+    ref.watch(searchApiRepositoryProvider),
   ),
 );
 
 class SearchService {
   final ApiService _apiService;
   final AssetRepository _assetRepository;
+  final SearchApiRepository _searchApiRepository;
 
   final _log = Logger("SearchService");
-  SearchService(this._apiService, this._assetRepository);
+  SearchService(this._apiService, this._assetRepository, this._searchApiRepository);
 
   Future<List<String>?> getSearchSuggestions(
     SearchSuggestionType type, {
@@ -32,7 +35,7 @@ class SearchService {
     String? model,
   }) async {
     try {
-      return await _apiService.searchApi.getSearchSuggestions(
+      return await _searchApiRepository.getSearchSuggestions(
         type,
         country: country,
         state: state,
@@ -118,9 +121,7 @@ class SearchService {
       }
 
       return SearchResult(
-        assets: await _assetRepository.getAllByRemoteId(
-          response.assets.items.map((e) => e.id),
-        ),
+        assets: await _assetRepository.getAllByRemoteId(response.assets.items.map((e) => e.id)),
         nextPage: response.assets.nextPage?.toInt(),
       );
     } catch (error, stackTrace) {

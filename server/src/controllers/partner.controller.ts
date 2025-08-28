@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthDto } from 'src/dtos/auth.dto';
 import { PartnerResponseDto, PartnerSearchDto, UpdatePartnerDto } from 'src/dtos/partner.dto';
@@ -13,19 +13,19 @@ export class PartnerController {
   constructor(private service: PartnerService) {}
 
   @Get()
-  @Authenticated({ permission: Permission.PARTNER_READ })
+  @Authenticated({ permission: Permission.PartnerRead })
   getPartners(@Auth() auth: AuthDto, @Query() dto: PartnerSearchDto): Promise<PartnerResponseDto[]> {
     return this.service.search(auth, dto);
   }
 
   @Post(':id')
-  @Authenticated({ permission: Permission.PARTNER_CREATE })
+  @Authenticated({ permission: Permission.PartnerCreate })
   createPartner(@Auth() auth: AuthDto, @Param() { id }: UUIDParamDto): Promise<PartnerResponseDto> {
     return this.service.create(auth, id);
   }
 
   @Put(':id')
-  @Authenticated({ permission: Permission.PARTNER_UPDATE })
+  @Authenticated({ permission: Permission.PartnerUpdate })
   updatePartner(
     @Auth() auth: AuthDto,
     @Param() { id }: UUIDParamDto,
@@ -35,7 +35,8 @@ export class PartnerController {
   }
 
   @Delete(':id')
-  @Authenticated({ permission: Permission.PARTNER_DELETE })
+  @Authenticated({ permission: Permission.PartnerDelete })
+  @HttpCode(HttpStatus.NO_CONTENT)
   removePartner(@Auth() auth: AuthDto, @Param() { id }: UUIDParamDto): Promise<void> {
     return this.service.remove(auth, id);
   }

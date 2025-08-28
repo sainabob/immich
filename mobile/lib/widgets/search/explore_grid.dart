@@ -13,11 +13,7 @@ class ExploreGrid extends StatelessWidget {
   final List<SearchCuratedContent> curatedContent;
   final bool isPeople;
 
-  const ExploreGrid({
-    super.key,
-    required this.curatedContent,
-    this.isPeople = false,
-  });
+  const ExploreGrid({super.key, required this.curatedContent, this.isPeople = false});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +23,7 @@ class ExploreGrid extends StatelessWidget {
         child: SizedBox(
           height: 100,
           width: 100,
-          child: ThumbnailWithInfo(
-            textInfo: '',
-            onTap: () {},
-          ),
+          child: ThumbnailWithInfo(textInfo: '', onTap: () {}),
         ),
       );
     }
@@ -53,12 +46,7 @@ class ExploreGrid extends StatelessWidget {
           borderRadius: 0,
           onTap: () {
             isPeople
-                ? context.pushRoute(
-                    PersonResultRoute(
-                      personId: content.id,
-                      personName: content.label,
-                    ),
-                  )
+                ? context.pushRoute(PersonResultRoute(personId: content.id, personName: content.label))
                 : context.pushRoute(
                     SearchRoute(
                       prefilter: SearchFilter(
@@ -69,11 +57,7 @@ class ExploreGrid extends StatelessWidget {
                         ),
                         camera: SearchCameraFilter(),
                         date: SearchDateFilter(),
-                        display: SearchDisplayFilters(
-                          isNotInAlbum: false,
-                          isArchive: false,
-                          isFavorite: false,
-                        ),
+                        display: SearchDisplayFilters(isNotInAlbum: false, isArchive: false, isFavorite: false),
                         mediaType: AssetType.other,
                       ),
                     ),

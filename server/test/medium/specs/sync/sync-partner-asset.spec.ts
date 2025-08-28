@@ -1,9 +1,9 @@
 import { Kysely } from 'kysely';
-import { DB } from 'src/db';
 import { SyncEntityType, SyncRequestType } from 'src/enum';
 import { AssetRepository } from 'src/repositories/asset.repository';
 import { PartnerRepository } from 'src/repositories/partner.repository';
 import { UserRepository } from 'src/repositories/user.repository';
+import { DB } from 'src/schema';
 import { SyncTestContext } from 'test/medium.factory';
 import { factory } from 'test/small.factory';
 import { getKyselyDB, wait } from 'test/utils';
@@ -40,6 +40,7 @@ describe(SyncRequestType.PartnerAssetsV1, () => {
       localDateTime: date,
       deletedAt: null,
       duration: '0:10:00.00000',
+      libraryId: null,
     });
 
     await ctx.newPartner({ sharedById: user2.id, sharedWithId: auth.user.id });
@@ -63,6 +64,9 @@ describe(SyncRequestType.PartnerAssetsV1, () => {
           type: asset.type,
           visibility: asset.visibility,
           duration: asset.duration,
+          stackId: null,
+          livePhotoVideoId: null,
+          libraryId: asset.libraryId,
         },
         type: SyncEntityType.PartnerAssetV1,
       },

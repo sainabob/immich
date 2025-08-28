@@ -1,7 +1,7 @@
 import { Kysely } from 'kysely';
-import { DB } from 'src/db';
 import { SyncEntityType, SyncRequestType } from 'src/enum';
 import { AssetRepository } from 'src/repositories/asset.repository';
+import { DB } from 'src/schema';
 import { SyncTestContext } from 'test/medium.factory';
 import { factory } from 'test/small.factory';
 import { getKyselyDB } from 'test/utils';
@@ -36,6 +36,7 @@ describe(SyncEntityType.AssetV1, () => {
       localDateTime: date,
       deletedAt: null,
       duration: '0:10:00.00000',
+      libraryId: null,
     });
 
     const response = await ctx.syncStream(auth, [SyncRequestType.AssetsV1]);
@@ -57,6 +58,9 @@ describe(SyncEntityType.AssetV1, () => {
           type: asset.type,
           visibility: asset.visibility,
           duration: asset.duration,
+          stackId: null,
+          livePhotoVideoId: null,
+          libraryId: asset.libraryId,
         },
         type: 'AssetV1',
       },

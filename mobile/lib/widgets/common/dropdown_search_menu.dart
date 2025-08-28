@@ -34,18 +34,12 @@ class DropdownSearchMenu<T> extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final selectedItem = useState<DropdownMenuEntry<T>?>(
-      dropdownMenuEntries
-          .firstWhereOrNull((item) => item.value == initialSelection),
+      dropdownMenuEntries.firstWhereOrNull((item) => item.value == initialSelection),
     );
     final showDropdown = useState<bool>(false);
 
-    final effectiveConstraints = menuConstraints ??
-        const BoxConstraints(
-          minWidth: 280,
-          maxWidth: 280,
-          minHeight: 0,
-          maxHeight: 280,
-        );
+    final effectiveConstraints =
+        menuConstraints ?? const BoxConstraints(minWidth: 280, maxWidth: 280, minHeight: 0, maxHeight: 280);
 
     final inputDecoration = InputDecoration(
       contentPadding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
@@ -86,10 +80,7 @@ class DropdownSearchMenu<T> extends HookWidget {
         displayStringForOption: (option) => option.label,
         optionsBuilder: (textEditingValue) {
           return dropdownMenuEntries.where(
-            (item) => item.label
-                .toLowerCase()
-                .trim()
-                .contains(textEditingValue.text.toLowerCase().trim()),
+            (item) => item.label.toLowerCase().trim().contains(textEditingValue.text.toLowerCase().trim()),
           );
         },
         onSelected: (option) {
@@ -146,32 +137,16 @@ class DropdownSearchMenu<T> extends HookWidget {
                       onTap: () => onSelected(option),
                       child: Builder(
                         builder: (BuildContext context) {
-                          final bool highlight =
-                              AutocompleteHighlightedOption.of(context) ==
-                                  index;
+                          final bool highlight = AutocompleteHighlightedOption.of(context) == index;
                           if (highlight) {
-                            SchedulerBinding.instance.addPostFrameCallback(
-                              (Duration timeStamp) {
-                                Scrollable.ensureVisible(
-                                  context,
-                                  alignment: 0.5,
-                                );
-                              },
-                              debugLabel: 'AutocompleteOptions.ensureVisible',
-                            );
+                            SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+                              Scrollable.ensureVisible(context, alignment: 0.5);
+                            }, debugLabel: 'AutocompleteOptions.ensureVisible');
                           }
                           return Container(
-                            color: highlight
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .onSurface
-                                    .withValues(alpha: 0.12)
-                                : null,
+                            color: highlight ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.12) : null,
                             padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              option.label,
-                              style: textStyle,
-                            ),
+                            child: Text(option.label, style: textStyle),
                           );
                         },
                       ),

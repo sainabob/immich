@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:immich_mobile/extensions/build_context_extensions.dart';
 import 'package:immich_mobile/providers/album/album.provider.dart';
+import 'package:immich_mobile/providers/asset.provider.dart';
 import 'package:immich_mobile/providers/asset_viewer/scroll_notifier.provider.dart';
+import 'package:immich_mobile/providers/haptic_feedback.provider.dart';
 import 'package:immich_mobile/providers/multiselect.provider.dart';
 import 'package:immich_mobile/providers/search/search_input_focus.provider.dart';
-import 'package:immich_mobile/routing/router.dart';
-import 'package:immich_mobile/providers/asset.provider.dart';
-import 'package:immich_mobile/providers/haptic_feedback.provider.dart';
 import 'package:immich_mobile/providers/tab.provider.dart';
+import 'package:immich_mobile/routing/router.dart';
 
 @RoutePage()
 class TabControllerPage extends HookConsumerWidget {
@@ -20,8 +20,7 @@ class TabControllerPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isRefreshingAssets = ref.watch(assetProvider);
     final isRefreshingRemoteAlbums = ref.watch(isRefreshingRemoteAlbumProvider);
-    final isScreenLandscape =
-        MediaQuery.orientationOf(context) == Orientation.landscape;
+    final isScreenLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
     Widget buildIcon({required Widget icon, required bool isProcessing}) {
       if (!isProcessing) return icon;
@@ -37,9 +36,7 @@ class TabControllerPage extends HookConsumerWidget {
               width: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  context.primaryColor,
-                ),
+                valueColor: AlwaysStoppedAnimation<Color>(context.primaryColor),
               ),
             ),
           ),
@@ -93,13 +90,8 @@ class TabControllerPage extends HookConsumerWidget {
       ),
       NavigationDestination(
         label: 'search'.tr(),
-        icon: const Icon(
-          Icons.search_rounded,
-        ),
-        selectedIcon: Icon(
-          Icons.search,
-          color: context.primaryColor,
-        ),
+        icon: const Icon(Icons.search_rounded),
+        selectedIcon: Icon(Icons.search, color: context.primaryColor),
       ),
       NavigationDestination(
         label: 'photos'.tr(),
@@ -116,15 +108,10 @@ class TabControllerPage extends HookConsumerWidget {
       ),
       NavigationDestination(
         label: 'library'.tr(),
-        icon: const Icon(
-          Icons.space_dashboard_outlined,
-        ),
+        icon: const Icon(Icons.space_dashboard_outlined),
         selectedIcon: buildIcon(
           isProcessing: isRefreshingAssets,
-          icon: Icon(
-            Icons.space_dashboard_rounded,
-            color: context.primaryColor,
-          ),
+          icon: Icon(Icons.space_dashboard_rounded, color: context.primaryColor),
         ),
       ),
     ];
@@ -132,8 +119,7 @@ class TabControllerPage extends HookConsumerWidget {
     Widget bottomNavigationBar(TabsRouter tabsRouter) {
       return NavigationBar(
         selectedIndex: tabsRouter.activeIndex,
-        onDestinationSelected: (index) =>
-            onNavigationSelected(tabsRouter, index),
+        onDestinationSelected: (index) => onNavigationSelected(tabsRouter, index),
         destinations: navigationDestinations,
       );
     }
@@ -141,16 +127,9 @@ class TabControllerPage extends HookConsumerWidget {
     Widget navigationRail(TabsRouter tabsRouter) {
       return NavigationRail(
         destinations: navigationDestinations
-            .map(
-              (e) => NavigationRailDestination(
-                icon: e.icon,
-                label: Text(e.label),
-                selectedIcon: e.selectedIcon,
-              ),
-            )
+            .map((e) => NavigationRailDestination(icon: e.icon, label: Text(e.label), selectedIcon: e.selectedIcon))
             .toList(),
-        onDestinationSelected: (index) =>
-            onNavigationSelected(tabsRouter, index),
+        onDestinationSelected: (index) => onNavigationSelected(tabsRouter, index),
         selectedIndex: tabsRouter.activeIndex,
         labelType: NavigationRailLabelType.all,
         groupAlignment: 0.0,
@@ -167,20 +146,12 @@ class TabControllerPage extends HookConsumerWidget {
         const LibraryRoute(),
       ],
       duration: const Duration(milliseconds: 600),
-      transitionBuilder: (context, child, animation) => FadeTransition(
-        opacity: animation,
-        child: child,
-      ),
+      transitionBuilder: (context, child, animation) => FadeTransition(opacity: animation, child: child),
       builder: (context, child) {
         final tabsRouter = AutoTabsRouter.of(context);
-        final heroedChild = HeroControllerScope(
-          controller: HeroController(),
-          child: child,
-        );
         return PopScope(
           canPop: tabsRouter.activeIndex == 0,
-          onPopInvokedWithResult: (didPop, _) =>
-              !didPop ? tabsRouter.setActiveIndex(0) : null,
+          onPopInvokedWithResult: (didPop, _) => !didPop ? tabsRouter.setActiveIndex(0) : null,
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: isScreenLandscape
@@ -188,13 +159,11 @@ class TabControllerPage extends HookConsumerWidget {
                     children: [
                       navigationRail(tabsRouter),
                       const VerticalDivider(),
-                      Expanded(child: heroedChild),
+                      Expanded(child: child),
                     ],
                   )
-                : heroedChild,
-            bottomNavigationBar: multiselectEnabled || isScreenLandscape
-                ? null
-                : bottomNavigationBar(tabsRouter),
+                : child,
+            bottomNavigationBar: multiselectEnabled || isScreenLandscape ? null : bottomNavigationBar(tabsRouter),
           ),
         );
       },
